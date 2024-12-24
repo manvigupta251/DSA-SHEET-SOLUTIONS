@@ -1,0 +1,45 @@
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        vector<vector<string>> ans;
+        queue<vector<string>> q;
+        q.push({beginWord});
+        set<string> st(wordList.begin(), wordList.end());
+        
+        if (st.find(endWord) == st.end()) return ans; // Early exit if endWord is not in the list
+
+        while (!q.empty()) {
+            int size = q.size();
+            vector<string> usedOnLevel; // Track words used at the current level
+            for (int i = 0; i < size; i++) {
+                auto path = q.front();
+                q.pop();
+                string word = path.back();
+                
+                if (word == endWord) {
+                    // Found a valid sequence
+                    if (ans.empty() || ans[0].size() == path.size()) {
+                        ans.push_back(path);
+                    }
+                }
+
+                for (int j = 0; j < word.size(); j++) {
+                    char original = word[j];
+                    for (char ch = 'a'; ch <= 'z'; ch++) {
+                        word[j] = ch;
+                        if (st.find(word) != st.end()) {
+                            usedOnLevel.push_back(word);
+                            path.push_back(word);
+                            q.push(path);
+                            path.pop_back(); // Backtrack
+                        }
+                    }
+                    word[j] = original; // Restore original character
+                }
+            }
+            // Erase all words used in this level from the set
+            for (auto& w : usedOnLevel) st.erase(w);
+        }
+        return ans;
+    }
+};
