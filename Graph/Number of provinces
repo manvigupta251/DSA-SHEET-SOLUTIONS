@@ -1,0 +1,41 @@
+//User function Template for C++
+
+class Solution {
+  private:
+    void solve(int node, vector<int> &visited, vector<int> adjlist[]){
+        visited[node] = 1;
+        for(auto it : adjlist[node]){
+            if(!visited[it]){
+                solve(it, visited, adjlist);
+            }
+        }
+    }
+    public:
+    int numProvinces(vector<vector<int>> adj, int V) {
+        // code here
+        //isme hume adj matrix di hui hain so we make it a list
+        vector<int> adjlist[V];
+        //isse 5 vector ki array banenege variable size ke 
+        /*declares an array of vectors of size n.*/
+        for(int i = 0; i<V; i++){
+            for(int j = 0; j<V; j++){
+                if(adj[i][j] == 1 && i!=j){
+                    adjlist[i].push_back(j);
+                    adjlist[j].push_back(i);
+                }
+            }
+        }
+        //ab har ek node ko dekho ni visited toh call dfs
+        vector<int> visited(V,0);
+        int cnt = 0;
+        for(int i = 0; i<V; i++){
+            if(!visited[i]){
+                cnt++;
+                //jitni baar chlega means utne disconnected components hain
+                solve(i, visited, adjlist);
+            }
+        }
+        return cnt;
+        
+    }
+};
