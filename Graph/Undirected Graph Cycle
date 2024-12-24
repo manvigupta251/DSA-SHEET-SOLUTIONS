@@ -1,0 +1,48 @@
+class Solution {
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool detectcycle(int src, vector<int> adj[], int visited[]){
+        //ab yha simple queue main bfs chlao value, parent dalke
+        queue<pair<int,int>> q;
+        q.push({src, -1});
+        visited[src] = 1;
+    
+        while(!q.empty()){
+            int node = q.front().first;
+            int parent = q.front().second;
+            q.pop();
+            //ab adj list pr jaenge aur uske nodes 
+            for(auto neighbor : adj[node]){
+                if(!visited[neighbor]){
+                    visited[neighbor] = 1;
+                    //yha pr dalenge node bec iski adj main mila toh yeh parent
+                    q.push({neighbor, node});
+                }
+                //aur yha parent se islie kia kyuki parent hi adj ka hainparent toh agr same ni nikla soooo
+                else if(parent != neighbor){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    bool isCycle(int V, vector<int> adj[]) {
+        /*
+        iss main basically hum ekathe chalaenge left right ya jitne bhi cnnected ek level pr ie bfs
+        isse paretn agr same hua ie 2 ki list pr gaye 1 aya agra pehli visited hain
+        toh check ki parent kon hain agr sahi hua toh okay agr parent nhi hua so iska mtlb cycle hain
+        kisi aur ne usko visit kia hain return true;
+        */
+        int visited[V] = {0};
+        //for connected component check
+        for(int i = 0; i<V; i++){
+            if(!visited[i]){
+                if(detectcycle(i, adj, visited) == true) return true;
+            }
+            
+        }
+        return false; // no cycle found
+    }
+};
