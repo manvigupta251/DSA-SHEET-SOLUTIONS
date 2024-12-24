@@ -1,0 +1,84 @@
+class Disjoint{
+	public:
+	vector<int> parent, rank;
+
+	Disjoint(int n){
+		parent.resize(n+1);
+		rank.resize(n+1, 1);
+
+		for(int i = 0; i<=n; i++){
+			parent[i] = i;
+		}
+	}
+
+	//union
+	void unionFind(int u, int v){
+		int parU = findParent(u);
+		int parV = findParent(v);
+
+		if(parU == parV) return;
+
+		if(rank[parU] > rank[parV]){
+			parent[v] = parU;
+		}
+
+		else if(rank[parV] > rank[parU]){
+			parent[u] = parV;
+		}
+
+		else{
+			parent[u] = parV;
+			rank[parV]++;
+		}
+	}
+	//findParent with path compression
+	int findParent(int node){
+		while(parent[node] != node){
+			node = parent[node];
+		}
+		return node;
+	}
+};
+
+vector<int> numOfIslandsII(int n, int m, vector<vector<int>> &q){
+	vector<int> numIslands;
+
+	Disjoint ds(n*m); 
+	vector<int> visited(n*m, 0); //har query ko baar baar kyu dekhna
+
+	vector<int> dirRow = {0, -1, 0, 1};
+	vector<int> dirCol = {1, 0, -1, 0};
+
+	int cnt = 0;
+	//full 0 se bhari grid then make 1 at given query coords
+	for(auto it:q) {
+		int r = it[0];
+		int c = it[1];
+
+		if(visited[(r*m)+c]){
+			numIslands.push_back(cnt);
+			continue;
+		}
+
+		visited[(r*m)+c] = 1;
+		cnt++;
+		for(int i = 0; i<4; i++){
+			int newR = dirRow[i] + r;
+			int newC = dirCol[i] + c;
+
+			if(newR >= 0 && newR < n && newC >= 0 && newC < m && visited[(newR*m)+newC]){
+				//agr parent dono ka alg toh minus plus union
+				int x = (r*m) + c;
+				int y = (newR*m) + newC;
+				int parU = ds.findParent(x), parY = ds.findParent(y);
+				if(parU != parY){
+					//union and cnt--;
+					cnt--;
+					ds.unionFind(parU, parY);
+				}
+			}
+		}
+		numIslands.push_back(cnt);
+	}
+	return numIslands;
+}
