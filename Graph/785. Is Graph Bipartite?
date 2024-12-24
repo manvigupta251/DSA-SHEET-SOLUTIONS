@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        //har level ko parent se opposite color
+        //lets take two colors as 0 & 1
+        int vertices = graph.size();
+        vector<int> color(vertices, -1);
+        queue<int> q;
+        for(int i = 0; i<vertices; i++){
+            if(color[i] == -1){
+                color[i] = 0;
+                q.push(i);
+                while(!q.empty()){
+                    int node = q.front();
+                    q.pop();
+                    for(auto it: graph[node]){
+                        if(color[it] == -1){
+                            color[it] = !color[node];
+                            q.push(it);
+                        }
+                        else if(color[it] == color[node]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
