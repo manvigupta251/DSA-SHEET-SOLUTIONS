@@ -1,0 +1,102 @@
+class Disjoint{
+public:
+    vector<int> parent, size;
+
+    Disjoint(int n){
+        parent.resize(n+1);
+        size.resize(n+1, 1);
+
+        for(int i = 0; i<=n; i++) parent[i] = i;
+    }
+
+    void unionFind(int x, int y){
+        int parentX = findParent(x);
+        int parentY = findParent(y);
+
+        if(parentX == parentY) return;
+
+        if(size[parentX] > size[parentY]){
+            //union of y into x
+            parent[parentY] = parentX;
+            size[parentX] += size[parentY];
+        }
+
+        else{
+            //dono ka size same ya ek bada
+            parent[parentX] = parentY;
+            size[parentY] += size[parentX];
+        }
+    }
+
+    int findParent(int node){
+        if(node == parent[node]) return node;
+        return parent[node] = findParent(parent[node]);
+    }
+
+};
+
+class Solution {
+public:
+    bool isValid(int row, int col, int n){
+        return row >= 0 && col >= 0 && row < n && col < n;
+    }
+
+    int largestIsland(vector<vector<int>>& grid) {
+        int maxi = 0;
+        int n = grid.size();
+
+        vector<int> dirRow = {-1,0,1,0};
+        vector<int> dirCol = {0,1,0,-1};
+
+        //sbse pehle saare 1 ka union karlete hain
+        Disjoint ds(n*n);
+        for(int row = 0; row<n; row++){
+            for(int col = 0; col<n; col++){
+                if(grid[row][col] == 0) continue;
+
+                //ab 1 pr khade hoke check in four dir
+                for(int i = 0; i<4; i++){
+                    int newR = dirRow[i] + row;
+                    int newC = dirCol[i] + col;
+
+                    if(isValid(newR, newC, n) && grid[newR][newC] == 1){
+                        int nodeNo = row * n + col;
+                        int adjNodeNo = newR * n + newC;
+                        ds.unionFind(nodeNo, adjNodeNo);
+                    }
+                }
+            }
+        }
+
+        //ab har zero pr jaake try to merge and calc biggest area
+        for(int row = 0; row<n; row++){
+            for(int col = 0; col<n; col++){
+                if(grid[row][col] == 1) continue;
+                set<int> components;
+
+                for(int i = 0; i<4; i++){
+                    int newR = dirRow[i] + row;
+                    int newC = dirCol[i] + col;
+
+                    if(isValid(newR, newC, n) && grid[newR][newC] == 1){
+                        int adjNodeNo = newR * n + newC;
+                        components.insert(ds.findParent(adjNodeNo));
+                    }
+                }
+
+                int sizeTotal = 0;
+                for (auto it : components) {
+                    sizeTotal += ds.size[it];
+                }
+                //plus 1 islie kyuki ab isme zero bhi toh ek jisko one kia hain add hoga
+                maxi = max(maxi, sizeTotal + 1);
+
+            }
+        }
+        //this si for test case if all island consists of 1
+        for (int cellNo = 0; cellNo < n * n; cellNo++) {
+            maxi = max(maxi, ds.size[ds.findParent(cellNo)]);
+        }
+        return maxi;
+    }
+};
