@@ -1,0 +1,68 @@
+#include <bits/stdc++.h> 
+class TrieNode{
+public:
+    TrieNode* child[26];
+    bool isEnding;
+
+    TrieNode(){
+        this->isEnding = false;
+
+        for(int i = 0; i<26; i++){
+            this->child[i] = NULL;
+        }
+    }
+
+    void insert(TrieNode* root, string str){
+        TrieNode* pcrawl = root;
+        //now i have to insert each char
+        for(int i = 0; i<str.size(); i++){
+            int ch = str[i]-'a';
+            if(pcrawl->child[ch] == NULL){
+                //Create a new node for
+                // the letter if not present
+                pcrawl->child[ch] = new TrieNode();
+            }
+            //ab har hi alpha ko put karna hain so keep traversing
+            pcrawl = pcrawl->child[ch]; //ie agr already ninja ke case main n present ho ya 
+            //insert kia bhi ho toh aage j insert karo ab
+        } 
+        pcrawl->isEnding = true;
+    }
+
+    bool isPresentPrefix(string str, TrieNode* root){
+        //now check each substr ie word traverse check if each char is marked ended true
+        TrieNode* pcrawl = root;
+        for(int i = 0; i<str.size(); i++){
+            int indx = str[i]-'a';
+            //toh sbse pehle pcrwal ko ab uss alphabet pr le jao
+            pcrawl = pcrawl->child[indx];
+            if(pcrawl == NULL || pcrawl->isEnding == false) return false;
+        }
+        return true;
+    }
+
+};
+
+string completeString(int n, vector<string> &a){
+    TrieNode* root = new TrieNode();
+
+    string ans = "";
+
+    for(int i = 0; i<a.size(); i++){
+        root->insert(root, a[i]);
+    }
+
+    for(int i = 0; i<a.size(); i++){
+        if(!root->isPresentPrefix(a[i], root)) continue;
+
+        if(ans.size() < a[i].size()){
+            ans = a[i];
+        }
+        else if(ans.size() == a[i].size() && a[i] < ans){ //lexico smaller
+            ans = a[i];
+        }
+    }
+
+    if(ans == "") return "None";
+    return ans;
+}
