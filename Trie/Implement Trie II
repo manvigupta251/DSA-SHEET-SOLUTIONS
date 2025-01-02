@@ -1,0 +1,87 @@
+#include <bits/stdc++.h> 
+class TrieNode
+{
+    public:
+	TrieNode *child[26];
+	int wordCount;
+	int prefixCount;
+
+	TrieNode()
+	{
+		for (int i = 0; i < 26; i++)
+		{
+			child[i] = NULL;
+		}
+		wordCount = 0;
+		prefixCount = 0;
+	}
+};
+
+
+class Trie{
+
+    public:
+    TrieNode* root;
+
+    Trie(){
+        root = new TrieNode();
+    }
+
+    void insert(string &word){
+        TrieNode* pCrawl = root;
+        //ab insert main aisa hain ya toh woh inserted hoga ya nahi
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i]-'a';
+            //if not filled
+            if(pCrawl->child[indx] == NULL) pCrawl->child[indx] = new TrieNode();
+
+            pCrawl = pCrawl->child[indx];
+            pCrawl->prefixCount++;
+        }
+        pCrawl->wordCount++;
+    }
+
+    int countWordsEqualTo(string &word){
+        //ab pura end tk traverse word cnt print
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i]-'a';
+            //ab yhi hain what if word not exist
+            if(pCrawl->child[indx] == NULL) return 0;
+
+            pCrawl = pCrawl->child[indx];
+        }
+        return pCrawl->wordCount;
+    }
+
+    int countWordsStartingWith(string &word){
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i]-'a';
+            //ab yhi hain what if word not exist
+            if(pCrawl->child[indx] == NULL) return 0;
+
+            pCrawl = pCrawl->child[indx];
+        }
+        return pCrawl->prefixCount;
+    }
+
+    void erase(string &word){
+        //isme kuch ni jaise jaise word hataenge jo trie main hain
+        //prefix cnt erase minus minus and at the end endword bhi ek ghata denge
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i]-'a';
+            pCrawl = pCrawl->child[indx];
+
+            if(pCrawl == NULL) return;
+            pCrawl->prefixCount--;
+        }
+        pCrawl->wordCount--;
+    }
+};
+
+	
+
+
+
