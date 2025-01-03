@@ -1,0 +1,52 @@
+class TrieNode{
+public:
+    TrieNode* child[26];
+    bool isEnd;
+
+    TrieNode(){
+        for(int i = 0; i<26; i++) child[i] = NULL;
+        isEnd = false;
+    }
+
+};
+
+class Trie {
+public:
+    TrieNode* root;
+
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    void insert(string word) {
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i] - 'a';
+            //ya toh pehle se hoga ya put kardo
+            if(pCrawl->child[indx] == NULL) pCrawl->child[indx] = new TrieNode();
+            pCrawl = pCrawl->child[indx];
+        }
+        pCrawl->isEnd = true;
+    }
+    
+    bool search(string word) {
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<word.size(); i++){
+            int indx = word[i] - 'a';
+            pCrawl = pCrawl->child[indx];
+            if(pCrawl == NULL) return false;
+        }
+        if(pCrawl->isEnd == false) return false;
+        return true;
+    }
+    
+    bool startsWith(string prefix) {
+        TrieNode* pCrawl = root;
+        for(int i = 0; i<prefix.size(); i++){
+            int indx = prefix[i] - 'a';
+            pCrawl = pCrawl->child[indx];
+            if(pCrawl == NULL) return false;
+        }
+        return true;
+    }
+};
