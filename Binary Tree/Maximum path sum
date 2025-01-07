@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int maxsum = INT_MIN;
+    int solve(TreeNode* root){
+        if(root == NULL) return 0;
+        int lh = max(solve(root->left),0);
+        int rh = max(solve(root->right),0);
+        maxsum = max(lh + rh + root->val, maxsum);
+        return max(lh, rh)+root->val;
+    }
+    int maxPathSum(TreeNode* root) {
+        solve(root);
+        return maxsum;
+    }
+};
