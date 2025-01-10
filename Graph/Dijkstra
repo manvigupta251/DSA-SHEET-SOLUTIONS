@@ -1,0 +1,39 @@
+// User Function Template
+class Solution {
+  public:
+    // Function to find the shortest distance of all the vertices
+    // from the source vertex src.
+    vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
+        int n = adj.size();
+        
+        vector<int> dist(n, 1e9);
+        dist[src] = 0;
+        
+        set<pair<int, int>> st;
+        st.insert({0, src});
+        //0 daala dist and node dali
+        
+        while(!st.empty()){
+            auto topele = *(st.begin());
+            int distance = topele.first;
+            int node = topele.second;
+            
+            st.erase({distance, node});
+            
+            for(auto it: adj[node]){
+                int newnode = it.first;
+                if(distance + it.second < dist[newnode]){
+                    dist[newnode] = distance + it.second;
+                    
+                    if(dist[newnode] != 1e9){
+                        st.erase({dist[newnode], newnode});
+                    }
+                    
+                    st.insert({distance + it.second, newnode});
+                }
+            }
+        }
+        
+        return dist;
+    }
+};
