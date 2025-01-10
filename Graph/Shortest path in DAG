@@ -1,0 +1,51 @@
+// User function Template for C++
+class Solution {
+  public:
+    void dfs(int src, vector<pair<int, int>> adj[], stack<int> &st, vector<int> &visited){
+        visited[src] = 1;
+        
+        for(auto &it: adj[src]){
+            if(!visited[it.first]){
+                dfs(it.first, adj, st, visited);
+            }
+        }
+        
+        st.push(src);
+    }
+  
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        vector<pair<int, int>> adj[V];
+        
+        for(auto it: edges){
+            adj[it[0]].push_back({it[1], it[2]});
+        }
+        
+        vector<int> dist(V, 1e9);
+        dist[0] = 0;
+        //why we are finding topo sort first because dfs simple ek path pr do baar jao 
+        //check karo tc increase same with dijkstra as we know its a DAG so
+        //topo sort is a better option node 3 pr find min(dist from all nodes to reach 3)
+        stack<int> st;
+        vector<int> visited(V, 0);
+        dfs(0, adj, st, visited);
+        
+        //ab topo ke order pr queue lagao
+        while(!st.empty()){
+            int node = st.top();
+            st.pop();
+            
+            for(auto &it: adj[node]){
+                int v = it.first;
+                int wt = it.second;
+                
+                if(wt + dist[node] < dist[v]){
+                    dist[v] = wt + dist[node];
+                }
+            }
+        }
+        
+        
+        for(int i = 0; i<V; i++) if(dist[i] == 1e9) dist[i] = -1;
+        return dist;
+    }
+};
