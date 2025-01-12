@@ -1,0 +1,56 @@
+class Solution {
+public:
+    TreeNode* makeparent(TreeNode* root,int start, map<TreeNode*,TreeNode*> &markparent){
+        markparent[root]=NULL;
+        TreeNode* res=NULL;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* curr=q.front();
+            if(curr->val==start) res=curr;
+            q.pop();
+            if(curr->left){
+                markparent[curr->left]=curr;
+                q.push(curr->left);
+            }
+            if(curr->right){
+                markparent[curr->right]=curr;
+                q.push(curr->right);
+            }
+        }
+        return res;
+    }
+    int amountOfTime(TreeNode* root, int start) {
+        if(root==NULL) return 0;
+        map<TreeNode*,TreeNode*> markparent;
+        TreeNode* target=makeparent(root,start,markparent);
+        map<TreeNode*,int> vis;
+        vis[target]=1;
+        
+        queue<pair<TreeNode*, int>> q;
+        q.push({target, 0});
+        int t = 0;
+        while(!q.empty()){
+            auto it = q.front();
+            q.pop();
+            TreeNode* node = it.first;
+            int time = it.second;
+
+                t = max(t, time); 
+                if(node->left && !vis[node->left]){
+                    vis[node->left]=1;
+                    q.push({node->left, time+1});
+                }
+                if(node->right && !vis[node->right]){
+                    vis[node->right]=1;
+                    q.push({node->right, time+1});
+                }
+                if(markparent[node] && !vis[markparent[node]]){
+                    vis[markparent[node]]=1;
+                    q.push({markparent[node], time+1});
+                }
+            
+        }
+            return t;
+    }
+};
