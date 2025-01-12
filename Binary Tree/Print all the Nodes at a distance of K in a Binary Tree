@@ -1,0 +1,81 @@
+class Solution {
+
+  public:
+  
+    void markParOfNodes(map<Node*, Node*> &markParent, Node* root){
+        if(root == NULL) return;
+        
+        //ab har level ke node ka same parent hoga so level order
+        queue<Node*> q;
+        q.push(root);
+        
+        while(!q.empty()){
+                Node* parent = q.front();
+                q.pop();
+                
+                if(parent->left){
+                    markParent[parent->left] = parent;
+                    q.push(parent->left);
+                } 
+                if(parent->right){
+                    markParent[parent->right] = parent;
+                    q.push(parent->right);
+                } 
+        }
+    }
+    
+    Node* search(Node* root, int target){
+        if(root == NULL) return NULL;
+        if(root->data==target) return root;
+        Node* searchNode = search(root->left, target);
+        if(searchNode) return searchNode;
+        return search(root->right, target);
+    }
+
+    vector<int> KDistanceNodes(Node* root, int target, int k) {
+        // return the sorted vector of all nodes at k dist
+        vector<int> ans;
+        map<Node*, bool> visited;
+        map<Node*, Node*> markParent;
+        if(root == NULL) return ans;
+        markParOfNodes(markParent, root);
+        
+        Node* tar = search(root, target);
+        
+        queue<pair<Node*, int>> q;
+        q.push({tar, 0});
+        
+        visited[tar] = true;
+        
+        while(!q.empty()){
+            Node* parent = q.front().first;
+            int dist = q.front().second;
+            
+            q.pop();
+            
+            if(dist == k){
+                ans.push_back(parent->data);
+                continue;
+            }
+            
+            if(parent->left && visited[parent->left] == false){
+                q.push({parent->left, dist+1});
+                visited[parent->left] = true;
+            }
+            
+            if(parent->right && visited[parent->right] == false){
+                q.push({parent->right, dist+1});
+                visited[parent->right] = true;
+            }
+            
+            if(markParent[parent] && visited[markParent[parent]] == false){
+                q.push({markParent[parent], dist+1});
+                visited[markParent[parent]] = true;
+            }
+        }
+        
+        sort(ans.begin(), ans.end());
+        return ans;
+        
+    }
+};
