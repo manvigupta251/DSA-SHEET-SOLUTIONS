@@ -1,0 +1,57 @@
+//now we will everse the graph and see if every edge not weighted 
+//mid can be reached to 0 so reverse se 0 se check all we can visit or not
+class Solution {
+public:
+    void dfs(int node, unordered_map<int, vector<pair<int, int>>>& adj, vector<int>& visited, int mid) {
+        visited[node] = 1;
+        for (auto it : adj[node]) {
+            int val = it.first;
+            int wt = it.second;
+            if (!visited[val] && wt <= mid) {
+                visited[val] = 1;
+                dfs(val, adj, visited, mid);
+            }
+        }
+    }
+
+    bool canReach(unordered_map<int, vector<pair<int, int>>>& adj, int mid, int n) {
+        vector<int> visited(n, 0);
+
+        dfs(0, adj, visited, mid);
+
+        for (auto &it : visited) {
+            if (it == 0) return false;
+        }
+        return true;
+    }
+
+    int minMaxWeight(int n, vector<vector<int>>& edges, int threshold) {
+        unordered_map<int, vector<pair<int, int>>> adj;
+        int maxWt = 0;
+
+        for (auto it : edges) {
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+            maxWt = max(wt, maxWt);
+
+            adj[v].push_back({u, wt});
+        }
+
+        int start = 1, end = maxWt;
+        int ans = INT_MAX;
+
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+
+            if (canReach(adj, mid, n)) {
+                ans = mid;
+                end = mid - 1;
+            } else {
+                start = mid + 1;
+            }
+        }
+
+        return ans == INT_MAX ? -1 : ans;
+    }
+};
