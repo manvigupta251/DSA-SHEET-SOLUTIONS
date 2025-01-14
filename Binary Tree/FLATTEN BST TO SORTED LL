@@ -1,0 +1,34 @@
+class Solution
+{
+public:
+    Node *flattenBST(Node *root)
+    {
+        //as it is bst we need inorder bec we want to make it sorted
+        //so left root right so sbse pehle flatten karlo kisko bhi pr root 
+        //humesha left part se banegi if left exist return left Head hoga
+        
+        
+        //recursion leap of faith right ko bhej flatten hoke aa gaya
+        //ab pata hain ki hume isme sbkuch root ke right main chahiye
+        //and null in left toh hume ab root->right 
+        //main left hona chahiye fir left jaha khatm hogi waha right insert kardenge
+        if(root == NULL) return NULL;
+        //steps
+        //right call root se jod denge kyuki right main root se bade hain saare
+        //toh root ke baad main aenge
+        root->right  = flattenBST(root->right);
+        Node* leftHead = flattenBST(root->left);
+        root->left = NULL;
+        
+        if(leftHead){
+            Node* temp = leftHead;
+            while(temp->right != NULL){
+                temp = temp->right;
+            }
+            temp->right = root;
+        }
+        else leftHead = root;
+        
+        return leftHead;
+    }
+};
