@@ -1,0 +1,16 @@
+class Solution {
+public:
+    bool solve(TreeNode* root, long mini, long maxi){
+        if(!root) return true;
+
+        if(mini >= root->val || maxi <= root->val) return false;
+
+        return solve(root->left, mini, root->val) &&
+        solve(root->right, root->val, maxi);
+
+    }
+    bool isValidBST(TreeNode* root) {
+        //left ka min and right ka max agr inke beech root ari hain so okay
+        return solve(root,LONG_MIN, LONG_MAX);
+    }
+};
