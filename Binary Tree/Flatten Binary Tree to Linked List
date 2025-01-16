@@ -1,0 +1,78 @@
+APPROACH 1:
+
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        if(root == NULL) return;
+
+        stack<TreeNode*> st;
+        st.push(root);
+
+        while(!st.empty()){
+            TreeNode* curr = st.top();
+            st.pop();
+
+            if(curr->right) st.push(curr->right);
+            if(curr->left) st.push(curr->left);
+
+            if(!st.empty()) curr->right = st.top();
+            
+            curr->left = NULL;
+            //basically 1 hi curr tha root rhega jb curr hua changes kardie age bhi karre curr pointer ko us node pr lake rot toh intact 
+            //hain ab curr 1 hai toh uske right left change kie aisi aage karnege right pushed first because stack hain LIFO
+        }
+    }
+};
+
+APPROACH 2:
+
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        //morris approach preorder-> root left right
+        //ab isme change yeh hain sbko right main dalna hain and left null so 
+        //left ka jo rightmost dhundhenge na use root ke right se seedha attach
+        //taki root-> right main left ko dal ske aur left ko null
+        if(!root) return;
+
+        TreeNode* curr = root;
+
+        while(curr != NULL){
+            //check left exist or not
+            if(curr->left == NULL){
+                curr = curr->right;
+            }
+            else{
+                TreeNode* temp = curr->left;
+                while(temp->right != NULL && temp->right != curr){
+                    temp = temp->right;
+                }
+                    //thread created
+                temp->right = curr->right;
+                curr->right = curr->left;
+                curr->left = NULL;
+            }
+            
+        }
+    }
+};
+
+
+APPROACH 3:
+
+class Solution {
+public:
+    TreeNode* prev = NULL;
+    
+    void flatten(TreeNode* root) {
+        //CURR PREV SABKE right main left main
+       if(root == NULL) return;
+       flatten(root->right);
+       flatten(root->left);
+
+        root -> right = prev;
+        root -> left = NULL;
+        prev = root;
+
+    }
+};
