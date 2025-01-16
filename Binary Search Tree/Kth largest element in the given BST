@@ -1,0 +1,39 @@
+/*The Node structure is defined as
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+// return the Kth largest element in the given BST rooted at 'root'
+class Solution {
+  public:
+    void revInorder(Node* root, int &cnt, int &ans, int k){
+        if(!root || cnt > k) return;
+        
+        //right
+        revInorder(root->right, cnt, ans, k);
+        
+        //root
+        cnt++;
+        
+        if(k == cnt) {ans = root->data; return; }
+        
+        //left
+       revInorder (root->left, cnt, ans, k);
+    }
+  
+    int kthLargest(Node *root, int k) {
+        //return revInorder(root, k);
+        //reverse inroder works maintain counter 
+        int cnt = 0, ans = -1;
+        revInorder(root, cnt, ans, k);
+        return ans;
+    }
+};
