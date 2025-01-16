@@ -1,0 +1,45 @@
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        //morris method for preorder -> root left right
+        //left exist not exist 
+        vector<int> ans;
+
+        if(!root) return ans;
+
+        TreeNode* curr = root;
+        while(curr != NULL){
+            //left !exist
+            if(curr->left == NULL){
+                ans.push_back(curr->val);
+                curr = curr->right;
+            }
+            else{
+                //ab left hain toh link banalo root pr wapas ane ka
+                //aur also chekc ki thread already hain ya nahi
+                TreeNode* temp = curr->left;
+                while(temp->right != NULL && temp->right != curr){
+                    temp = temp->right;
+                }
+                
+                if(temp->right == NULL){
+                    temp->right = curr;
+                    //ab left jare hain root pr dobaar thread ke through aenga pr 
+                    //left se pehle root aega so ans main push karre
+                    ans.push_back(curr->val);
+                    curr = curr->left;
+                }
+                else if(temp->right == curr){
+                    //this means thread exist main root ko dobara visit karri 
+                    //also root jo hain preorder ki wajah se alrready visited hain
+                    // toh yha push back dobara nahi karnege
+                    //now remove thread move right
+                    temp->right = NULL;
+                    curr = curr->right;
+                }
+            }
+        }
+        return ans;
+
+    }
+};
