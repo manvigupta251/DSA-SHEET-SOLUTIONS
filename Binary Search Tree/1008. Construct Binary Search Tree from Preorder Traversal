@@ -1,0 +1,33 @@
+class Solution {
+public:
+    TreeNode* solve(vector<int> &preorder, int &start, int end){
+        if(start > end) return NULL;
+        int rootVal = preorder[start];
+
+        TreeNode* newNode = new TreeNode(rootVal);
+        
+        int find = -1;
+        for(int i = start+1; i<=end; i++){
+            if(preorder[i] > rootVal){
+                find = i;
+                break;
+            }
+        }
+        start++;
+        if (find == -1) find = end + 1;
+        newNode->left = solve(preorder, start, find-1);
+        newNode->right = solve(preorder, find, end);
+        return newNode;
+    }
+
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        //pre-> root left right
+        //8 root    left & right -> 5 1 7 10 12 
+        //5 root    left & right -> 1 7 10 12
+        //                          ab 8 ke right main usse bada banega
+        //1 7 left    10  root  12 right
+        int n = preorder.size();
+        int start = 0;
+        return solve(preorder, start, n-1);
+    }
+};
