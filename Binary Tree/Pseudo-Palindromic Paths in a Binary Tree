@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int result = 0;
+
+    void solve(TreeNode* root, int xorr){
+        if(!root) return;
+        //now instead of vector make add in result
+
+        xorr = xorr ^ (1<<root->val); //ab 100 ban gaya now xor
+
+        if(root->left) solve(root->left, xorr);
+        if(root->right) solve(root->right, xorr);
+
+        if(!root->left && !root->right){
+            //a root to leaf path found
+            //val & val-1  == 0 toh mtlb 1 ek hain so palindrome hain
+            int cnt = __builtin_popcount(xorr);
+            if(cnt == 1) result++;
+        } 
+
+    }
+
+    int pseudoPalindromicPaths (TreeNode* root) {
+        //isme hume 0-9 digits hain toh check karlenge pura path banane 
+        //hum XOR karenge instead or OR because frequency chahiye
+        //ab xor se cancel hote jaenge even odd bachenge hua toh ab
+        //pr or se exist pata chl gaya pr freq kaise 
+        solve(root, 0);
+        return result;
+    }
+};
