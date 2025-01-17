@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool solve(TreeNode* root, bool flag){
+        bool left = false, right = false;
+
+        if(root->left) left = solve(root->left, flag);
+        if(root->right) right = solve(root->right, flag); 
+
+        // if(root->val == 0) left = false;
+        // if(root->val == 1) right = true;
+
+        if(left == false) root->left = NULL;
+
+        if(right == false) root->right = NULL;
+
+        return root->val || left|| right;
+    }
+    TreeNode* pruneTree(TreeNode* root) {
+        if(!root) return NULL;
+        solve(root, false);
+        if(root->left == NULL && root->right == NULL && root->val == 0) return NULL;
+        return root;
+    }
+};
