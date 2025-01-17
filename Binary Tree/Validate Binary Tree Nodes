@@ -1,0 +1,80 @@
+class Solution {
+public:
+    void dfs(int root, unordered_map<int, vector<int>>& adjList, vector<int>& visited, int& cnt) {
+        visited[root] = 1;
+
+        for (auto& it : adjList[root]) { // Use `.at()` for safety
+            if (!visited[it]) {
+                cnt++;
+                dfs(it, adjList, visited, cnt);
+            }
+        }
+    }
+
+    bool validateBinaryTreeNodes(int n, vector<int>& leftChild, vector<int>& rightChild) {
+        /*valid bt
+        -> ek root -> child to parent map check node not present is root
+        ->tree connected ->adj list se traverse if cnt == n
+        ->har child ka sirf ek parent -> if child already exist in map false
+        */
+        unordered_map<int , vector<int>> adjList;
+        unordered_map<int, int> childToparent;
+
+        for(int i = 0; i<n; i++){
+            if(leftChild[i] != -1){
+                //means now this element needs to be placed in map
+                adjList[i].push_back(leftChild[i]);
+
+                if(childToparent.find(leftChild[i]) == childToparent.end()){
+                    childToparent[leftChild[i]] = i;
+                }
+                else return false; //child has multiple parent
+            }
+            if(rightChild[i] != -1){
+                adjList[i].push_back(rightChild[i]);
+
+                if(childToparent.find(rightChild[i]) == childToparent.end()){
+                    childToparent[rightChild[i]] = i;
+                }
+                else return false;
+            }
+        }
+        //root find
+        if( childToparent.size() >= n) return false;
+        int root = -1;
+        //warna ab map main traverse and find root
+        for(int i = 0; i<n; i++){
+            if(childToparent.find(i) == childToparent.end()){
+                if(root == -1){
+                    root = i;
+                }
+                else return false;
+            }
+        }
+        if(root == -1) return false;
+
+        vector<int> visited(n, 0);
+        //queue<int> que;
+        int count = 1;
+        //que.push(root);
+        visited[root] = true;
+        dfs(root, adjList, visited, count);
+        
+        // while(!que.empty()) { 
+        //     int node = que.front();
+        //     que.pop();
+
+        //     for(int &child : adjList[node]) {
+        //         if(!visited[child]) {
+        //             visited[child] = true;
+        //             count++;
+        //             que.push(child);
+        //         }
+        //     }
+
+        // }
+
+        return count == n; 
+
+    }
+};
