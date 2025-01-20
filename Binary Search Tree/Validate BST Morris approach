@@ -1,0 +1,73 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        if (!root) return; 
+        //approach 2 MORRIS INORDER to remove stack space
+        //morris uses thread so that we dont backtrack 
+        TreeNode* first = NULL;
+        TreeNode* last = nullptr;
+        TreeNode* temp = root;
+        TreeNode* curr = nullptr;
+        TreeNode* prev = nullptr;
+        //here our curr > prev
+
+        while(temp != NULL){
+            //if left do not exist
+            if(!temp->left){
+                prev = curr;
+                curr = temp;
+                if(prev && prev->val > curr->val){
+                    if(!first){     
+                        first = prev;
+                    }
+                    last = curr;
+                }
+                temp = temp->right;
+            }
+            else{
+                //left eixst thread check
+                TreeNode* thread = temp->left;
+
+                while(thread->right != NULL && thread->right != temp){
+                    thread = thread->right;
+                }
+
+                if(thread->right == NULL){
+                    thread->right = temp;
+                    //thread created now move left
+                    temp = temp->left;
+                }
+                else{
+                    //thread remove now
+                    //also ab root pr doabara nahi aenge so yhi
+                    prev = curr;
+                    curr = temp;
+                    if(prev && prev->val > curr->val){
+                        if(!first){
+                            first = prev;
+                        }
+                        last = curr;
+                    }
+
+                    thread->right = NULL;
+                    temp = temp->right;
+                }
+            }
+        }
+
+        if (first && last) {
+            swap(first->val, last->val);
+        }
+    }
+};
