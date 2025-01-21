@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> arr;
+    void inorder(TreeNode* root){
+        if(!root) return;
+
+        //left root right
+        inorder(root->left);
+        arr.push_back(root->val);
+        inorder(root->right);
+    }
+
+    bool findTarget(TreeNode* root, int k) {
+        //either set or two pointer
+        inorder(root);
+        int left = 0, right = arr.size()-1;
+
+        while(left < right){//do element se milke sum aana chahiye
+            if(arr[left] + arr[right] == k) return true;
+            else if(arr[left] + arr[right] > k) right--;
+            else left++;
+        }
+        return false;
+    }
+};
