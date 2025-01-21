@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<vector<int>> dp;
+
+    int minCost(int n, vector<int>& cuts) {
+        // ab hume cuts array ko partition karn hain ki kb cut mare
+        // 5 6 1 4 2
+        //   i     j
+        // 1 2 3 4 5 6 7 8 9
+        //   i       k     j
+        sort(cuts.begin(), cuts.end());
+        int m = cuts.size();
+        dp.resize(m+2, vector<int>(m+2, 0));
+        cuts.insert(cuts.begin(), 0);
+        cuts.push_back(n);
+        //TABULATION
+        //rec relation main i-> 1-m  j-> m-0 k->i-j
+        for(int i = m; i>0; i--){
+            for(int j = i; j<=m; j++){
+                //if(i > j) continue; if j = 1 se start
+                int mini = INT_MAX;
+                for(int k = i; k<=j; k++){
+                    int solution = cuts[j+1] - cuts[i-1] + dp[i][k-1] + dp[k+1][j];
+                    mini = min(mini, solution);
+                }
+                dp[i][j] = mini;
+            }
+        } 
+        return dp[1][m];
+    }
+};
