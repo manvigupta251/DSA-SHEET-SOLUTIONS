@@ -1,0 +1,58 @@
+//RECURSIVE
+
+class Solution {
+  public:
+    int solve(vector<int> arr, int i, int j){
+        //now base case if we have only one matrix
+        if( i == j ) return 0;
+        //no operation is needed
+        
+        int mini = INT_MAX;
+        
+        //try partitions
+        for(int k = i; k<j; k++){
+            int solution = arr[i-1] * arr[k] * arr[j] + solve(arr, i, k) + solve(arr, k+1, j);
+            mini = min(mini, solution);
+        }
+        return mini;
+    }
+  
+    int matrixMultiplication(vector<int> &arr) {
+        //now we need to check for every partition
+        //1->n-1 k -> i -> j-1 cause single matrix toh chodni padegi
+        //hum do partition karre woh el further aagebadhega
+        return solve(arr, 1, arr.size()-1);
+    }
+};
+
+MEMOISED
+
+class Solution {
+  public:
+    vector<vector<int>> dp;
+    int solve(vector<int> arr, int i, int j){
+        //now base case if we have only one matrix
+        if( i == j ) return 0;
+        //no operation is needed
+        
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        int mini = INT_MAX;
+        
+        //try partitions
+        for(int k = i; k<j; k++){
+            int solution = arr[i-1] * arr[k] * arr[j] + solve(arr, i, k) + solve(arr, k+1, j);
+            mini = min(mini, solution);
+        }
+        return dp[i][j] = mini;
+    }
+  
+    int matrixMultiplication(vector<int> &arr) {
+        //now we need to check for every partition
+        //1->n-1 k -> i -> j-1 cause single matrix toh chodni padegi
+        //hum do partition karre woh el further aagebadhega
+        int n = arr.size();
+        dp.resize(n, vector<int>(n, -1));
+        return solve(arr, 1, n-1);
+    }
+};
