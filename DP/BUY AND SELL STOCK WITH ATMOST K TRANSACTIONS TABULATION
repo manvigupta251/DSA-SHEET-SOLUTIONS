@@ -1,0 +1,32 @@
+
+class Solution {
+  public:
+    int maxProfit(vector<int>& arr, int k) {
+        int n = arr.size();
+        
+        // index, buy, trans
+        int dp[n+1][2][k+1];
+        memset(dp, 0, sizeof(dp));
+        
+        for(int ind = n-1; ind >= 0; ind--) {
+            for(int buy = 0; buy <= 1; buy++) {
+                for(int trans = 1; trans <= k; trans++) {
+                    if(buy == 0) {
+                        int doesBuy = -arr[ind] + dp[ind+1][1][trans];
+                        int doesNotBuy = dp[ind+1][0][trans];
+                        
+                        dp[ind][buy][trans] = max(doesBuy, doesNotBuy);
+                    }
+                    else {
+                        int doesSell = arr[ind] + dp[ind+1][0][trans-1];
+                        int doesNotSell = dp[ind+1][1][trans];
+                        
+                        dp[ind][buy][trans] = max(doesSell, doesNotSell);
+                    }
+                }
+            }
+        }
+        
+        return dp[0][0][k];
+    }
+};
