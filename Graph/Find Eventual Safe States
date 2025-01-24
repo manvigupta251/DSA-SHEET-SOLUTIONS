@@ -1,0 +1,43 @@
+class Solution {
+public:
+    bool dfs(int node, vector<int>& vis, vector<int>& pathvis,
+              vector<int>& check, int V, vector<vector<int>>& adj) {
+                vis[node] = 1;
+                pathvis[node] = 1;
+
+                for(auto it : adj[node]){
+                    if(!vis[it]){
+                        if(dfs(it, vis, pathvis, check, V, adj) == true) return true;
+                    }
+                    else if(pathvis[it]){
+                        check[it] = 0;
+                        return true;
+                    }
+                }
+
+                pathvis[node] = 0;
+                check[node] = 1;
+                return false;
+              }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        // part of cycle or lead to cycle not a safe node
+        vector<int> safenode;
+        int V = graph.size();
+        vector<int> vis(V, 0);
+        // as cycle dhundhni hain toh path vis bhi maintain
+        vector<int> pathvis(V, 0);
+        // as hum check karre konsi safe nodes hain uunhe mark karenge so
+        vector<int> check(V, 0);
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) {
+                dfs(i, vis, pathvis, check, V, graph);
+            }
+        }
+        for (int i = 0; i < V; i++) {
+            if (check[i] == 1) {
+                safenode.push_back(i);
+            }
+        }
+        return safenode;
+    }
+};
