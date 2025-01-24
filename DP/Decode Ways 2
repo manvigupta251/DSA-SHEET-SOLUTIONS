@@ -1,0 +1,78 @@
+class Solution {
+public:
+    long long mod = 1e9+7;
+    long long solve(int i, string &s, vector<long long> &dp){
+        if(i == s.size()) return 1;
+
+        if (s[i] == '0') return 0;
+
+        if(dp[i] != -1){
+            return dp[i];
+        }
+
+        int n = s.size();
+        long long ways = 0;
+        /* cases
+            n*
+            *n
+            **
+            nn
+        */
+            //single digit check
+            if(s[i] == '*'){
+                ways += 9 * solve(i+1, s, dp);
+
+                //ab iske do jodke dekhenge 
+                //*n
+                //**
+                if(i + 1 < n){
+                    char ch = s[i+1];
+                    //abya toh number ya star
+                    //*n
+                    if(ch != '*'){
+                        //ab pehle star hain toh woh 1- 9 kuch bhi lekin jo digit hain agli woh 6 tk allowed and 9 tk in case if 1
+                        //toh total 12 allowed
+                        if(ch <= '6'){
+                            ways += 2 * solve(i+2, s, dp);
+                        }
+                        //greater than 7 toh bass 1 way bana jisme 1 ko rkha
+                        else ways += 1 * solve(i+2, s, dp);
+                    }
+                    //* *
+                    else ways += 15 * solve(i+2, s, dp);
+                }
+            }
+            
+            else {
+                ways +=solve(i+1, s, dp);
+                //normal like decode ways 1 of taking each digit
+            }
+        
+        //now checking two digits together
+        if(i+1<s.size()){
+            //n n 
+            //n *
+            char ch = s[i+1];
+            if(ch != '*'){
+                // n n
+                if(s[i] == '1' || (s[i] == '2' && ch <= '6')) ways += solve(i+2, s, dp);
+            }
+            else{ // n *
+                if(s[i] == '1'){
+                    ways += 9 * solve(i+2, s, dp);
+                }
+                else if(s[i] == '2'){
+                    ways += 6 * solve(i+2, s, dp);
+                }
+            }
+        }
+
+        return dp[i]=ways%mod;
+    }
+
+    int numDecodings(string s) {
+        int len = s.length();
+        vector<long long> dp(len, -1);
+        return solve(0, s, dp);
+    }
+};
