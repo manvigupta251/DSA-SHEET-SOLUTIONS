@@ -1,0 +1,57 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+
+    Node* copyRandomList(Node* head) {
+        if (!head) return NULL;
+        //now to make deep copy its easy to copy the next pointer
+        //but how to cpopy random pointer cause it can be pointing anywhere
+
+        //now to reduce tc by not traversing everytime instead storing in map
+        map<Node*, Node*> mp;
+        
+        Node* newList = new Node(head->val);
+        mp[head] = newList;
+
+        Node* temp = head->next; Node* newtemp = newList;
+
+        while(temp){
+            newtemp->next = new Node(temp->val);
+            //pr ab hume uss head main find arb ko iss list ke arb se connect karna hain
+            mp[temp] = newtemp->next; //1-1 2-2 3-3 ...
+
+            newtemp = newtemp->next;
+            temp = temp->next;
+        } 
+        //normal pinters done
+
+        temp = head; 
+        newtemp = newList;
+
+        //ab simply map se access karke random ko connect kardenge list se
+        while(temp){
+            //newtemp->random = mp[temp];
+            //pr ab hume uss head main find arb ko iss list ke arb se connect karna hain
+            newtemp->random = mp[temp->random]; //ab yeh meri iss list ki node ko point karra
+            temp = temp->next;
+            newtemp = newtemp->next;
+        }
+        
+        return newList;
+    }
+};
