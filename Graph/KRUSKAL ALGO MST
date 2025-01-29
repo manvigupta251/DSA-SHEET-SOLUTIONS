@@ -1,0 +1,60 @@
+class Solution {
+  public:
+    // Function to find sum of weights of edges of the Minimum Spanning Tree.
+    int findParent(int u, vector<int> &parent){
+        if (u == parent[u]) return u;
+        return parent[u] = findParent(parent[u], parent);
+    }
+    
+    void unionFind(int x, int y, vector<int> &parent, vector<int> &rank){
+        int parX = findParent(x, parent);
+        int parY = findParent(y, parent);
+        
+        if(parX == parY) return;
+        
+        else if(rank[parX] > rank[parY]){
+            parent[parY] = parX;
+        }
+        
+        else if(rank[parY] > rank[parX]){
+            parent[parX] = parY;
+        }
+        
+        else if(rank[parY] == rank[parX]){
+            parent[parX] = parY;
+            rank[parY]++;
+        }
+    }
+    
+    int spanningTree(int V, vector<vector<int>> adj[]) {
+        //kruskal Algo
+        //basically dsu se hoga
+        //ab how to find loop ki edge dalu ya nahi
+        //use parent array agr diff parent ko belong ko insert edge
+        vector<int> parent(V), rank(V, 1);
+        for(int i = 0; i<V; i++) parent[i] = i;
+        
+        int sum = 0;
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        //basically wt dalo jo min uske u aur v ka union kardo
+        for(int i = 0; i<V; i++){
+            for(auto it: adj[i]){
+                pq.push({it[1], i, it[0]});
+            }
+        }
+        
+        while(!pq.empty()){
+            auto temp = pq.top();
+            pq.pop();
+            
+            int wt = temp[0], u = temp[1], v = temp[2];
+
+            if (findParent(u, parent) != findParent(v, parent)) {
+                unionFind(u, v, parent, rank);
+                sum += wt;
+            }
+        }
+        
+        return sum;
+    }
+};
