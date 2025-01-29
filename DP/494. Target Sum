@@ -1,0 +1,20 @@
+class Solution {
+public:
+    void solve(int indx, vector<int> &nums, int &target, int &ways, int sum){
+        int n = nums.size();
+        if(indx == n){
+            ways += (sum == target) ? 1 : 0;
+            return;
+        }
+
+        //either + insert or -
+        solve(indx+1, nums, target, ways, sum+nums[indx]);
+        solve(indx+1, nums, target, ways, sum-nums[indx]);
+    }
+
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int ways = 0;
+        solve(0, nums, target, ways, 0);
+        return ways;
+    }
+};
