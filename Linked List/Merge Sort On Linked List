@@ -1,0 +1,60 @@
+class Solution {
+  public:
+    // Function to sort the given linked list using Merge Sort.
+    Node* mid(Node* head){
+        if(!head || !head->next) return head;
+        Node* slow = head;
+        Node* fast = head->next;  // Start fast one step ahead
+        
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        return slow;  // This returns the node before the midpoint
+    }
+
+    
+    Node* merge(Node* l1, Node* l2){
+        Node* dummyNode = new Node(-1);
+        Node* temp = dummyNode;
+        
+        while(l1 && l2){
+            if(l1->data < l2->data){
+                temp->next = l1;
+                temp = temp->next;
+                l1 = l1->next;
+            }
+            else{
+                temp->next = l2;
+                temp = temp->next;
+                l2 = l2->next;
+            }
+        }
+        
+        if(l1) temp->next = l1;
+        if(l2) temp->next = l2;
+        
+        return dummyNode->next;
+    }
+    
+    Node* mergeSort(Node* head) {
+        // Base case: If the list is empty or has only one node, return it
+        if (!head || !head->next) return head;
+    
+        // Find the middle of the list
+        Node* midNode = mid(head);
+    
+        // Split the list into two halves
+        Node* rightHead = midNode->next;
+        midNode->next = NULL;
+    
+        // Recursively sort both halves
+        Node* left = mergeSort(head);
+        Node* right = mergeSort(rightHead);
+    
+        // Merge the sorted halves
+        return merge(left, right);
+    }
+
+};
