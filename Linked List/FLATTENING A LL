@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    // Function which returns the  root of the flattened linked list.
+    Node* merge(Node* list1, Node* list2){
+        Node* head = new Node(-1);
+        Node* insert = head;
+        
+        while(list1 && list2){
+            if(list1->data < list2->data){
+                insert->bottom = list1;  //-1 1...
+                //cause flatten karna hain islie child
+                //insert = list1;
+                insert = insert->bottom;
+                list1 = list1->bottom;
+            }
+            
+            else{
+                insert->bottom = list2;
+                
+                insert = insert->bottom;
+                list2 = list2->bottom;
+            }
+            
+            insert->next = NULL;
+        }
+        
+        if(list1){
+            insert->bottom = list1;
+        } 
+        
+        else {
+            insert->bottom = list2;
+        }
+        
+        
+        if(head->bottom){
+            head->bottom->next = NULL;
+        }
+        
+        return head->bottom;
+    }
+    
+    Node *flatten(Node *root) {
+        // 1->2->3     this is how flatten look
+        // 5  7  9
+        // 6  8  1
+        //using recursion we will flatter
+        //so the concept is last lest tk read uska next null 
+        //so return last list as it is then ab jist node pr hain uss list ke sath
+        //this arrived list is merged and return newly list
+        if(root == NULL || root->next == NULL) return root;
+    
+        Node* toBeFlatten = flatten(root->next);
+        
+        return merge(toBeFlatten, root);
+    }
+};
