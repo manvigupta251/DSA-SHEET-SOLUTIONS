@@ -1,0 +1,46 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+
+    void dfs(int n, map<int, vector<int>> &adj, int parent, int child, int &time, vector<int> &disc, vector<int> &low, vector<int> &visited){
+        low[child] = time;
+        disc[child] = time;
+        visited[child] = 1;
+        time++;
+
+        for(auto it: adj[child]){
+            if(it == parent) continue;
+
+            if(visited[it]){
+                low[child] = min(low[child], low[it]);
+            }
+            //bridge hone ke lie ki kya tum mere ya mere se pehli node tk pahuch pare ho
+            else{
+                dfs(n, adj, child, it, time, disc, low, visited);
+                low[child] = min(low[child], low[it]);
+                //bridge found
+                if (low[it] > disc[child]) ans.push_back({child, it});
+            }
+        }
+    }
+
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        //this ques is real life application of bridges in graph
+        //sbse pehle hum sbko time assign karte hain dfs karke
+        //uske baad traverse and update min low time
+        //fir find bridge
+        vector<int> disc(n, 0);
+        vector<int> low(n, 0);
+        vector<int> visited(n, 0);
+
+        map<int, vector<int>> adj;
+        for(auto it: connections){
+            adj[it[0]].push_back(it[1]);
+            adj[it[1]].push_back(it[0]);
+        }
+
+        int time = 0;
+        dfs(n, adj, -1, 0, time, disc, low, visited);
+        return ans;
+    }
+};
