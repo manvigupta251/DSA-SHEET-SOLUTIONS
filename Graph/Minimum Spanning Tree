@@ -1,0 +1,36 @@
+// Function to find sum of weights of edges of the Minimum Spanning Tree.
+    int spanningTree(int V, vector<vector<int>> adj[]) {
+        //first way prims algo
+        int cost = 0;
+    
+        //now to remove edges we build graph with min wt edges
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        pq.push({0, 0}); //cost and node
+        
+        //as mst shuld not have loop so
+        vector<int> isMst(V, 0);
+        
+        while(!pq.empty()){
+            int node = pq.top().second;
+            int wt = pq.top().first;
+            
+            pq.pop();
+            if(isMst[node]) continue;
+            
+            isMst[node] = 1;
+            
+            cost += wt;
+            
+            //adj main jao vis nahi hain toh push crow
+            for (auto it : adj[node]) {
+            int v = it[0];  // Neighbor
+            int w = it[1];  // Edge Weight
+
+            if (!isMst[v]) {
+                pq.push({w, v});
+            }
+        }
+        }
+        
+        return cost;
+    }
