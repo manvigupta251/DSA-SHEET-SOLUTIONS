@@ -1,0 +1,50 @@
+class Solution {
+public:
+    int time;
+    vector<int> articulationPoints(int V, vector<int> adj[]) {
+        vector<int> disc(V, -1); // Discovery time
+        vector<int> low(V, -1);  // Lowest discovery time reachable
+        vector<int> visited(V, 0);
+        vector<int> marked(V, 0); // To ensure unique articulation points
+        vector<int> ans;
+        time = 0; // Reset time counter
+
+        function<void(int, int)> dfs = [&](int child, int parent) {
+            visited[child] = 1;
+            disc[child] = low[child] = time++;
+            int children = 0;
+
+            for (int it : adj[child]) {
+                if (it == parent) continue; // Ignore the parent node
+                
+                if (visited[it]) {
+                    low[child] = min(low[child], disc[it]); // Back edge
+                } else {
+                    children++;
+                    dfs(it, child);
+                    low[child] = min(low[child], low[it]);
+
+                    // Articulation point condition
+                    if (low[it] >= disc[child] && parent != -1) {
+                        marked[child] = 1;
+                    }
+                }
+            }
+            if (parent == -1 && children > 1) {
+                marked[child] = 1;
+            }
+        };
+
+        // Handle disconnected graphs
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) dfs(i, -1);
+        }
+
+        // Collect articulation points
+        for (int i = 0; i < V; i++) {
+            if (marked[i]) ans.push_back(i);
+        }
+
+        return ans.empty() ? vector<int>{-1} : ans;
+    }
+};
