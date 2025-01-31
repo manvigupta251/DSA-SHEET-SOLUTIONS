@@ -1,0 +1,45 @@
+#include <vector>
+#include <iostream>
+using namespace std;
+
+class Solution {
+
+    int solve(int r, int c, int n, int m, vector<vector<int>> &matrix) {
+        if (r >= n || c >= m) return 0;
+
+        if(dp[r][c] != -1) return dp[r][c];
+
+        int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int maxPath = 0;
+
+        for (int i = 0; i < 4; i++) {
+            int newR = r + dir[i][0];
+            int newC = c + dir[i][1];
+
+            if (newR >= 0 && newR < n && newC >= 0 && newC < m) {
+                if (matrix[newR][newC] > matrix[r][c]) {
+                    int len = solve(newR, newC, n, m, matrix);
+                    maxPath = max(maxPath, len);
+                }
+            }
+        }
+
+        return dp[r][c] = 1 + maxPath;
+    }
+
+public:
+    vector<vector<int>> dp;
+    int longestIncreasingPath(vector<vector<int>> &matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+        int result = 1;
+        dp.resize(n, vector<int>(m, -1));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                result = max(result, solve(i, j, n, m, matrix));      
+            }
+        }
+
+        return result;
+    }
+};
