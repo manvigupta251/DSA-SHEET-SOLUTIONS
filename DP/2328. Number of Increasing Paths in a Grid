@@ -1,0 +1,38 @@
+long long mod = 1e9+7;
+class Solution {
+public:
+    vector<int> dirRow = {0, -1, 0, 1};
+    vector<int> dirCol = {-1, 0, 1, 0};
+    vector<vector<int>> dp;
+
+    int solve(int row, int col, int n, int m, vector<vector<int>> &grid){       
+        if(dp[row][col] != -1) return dp[row][col];
+
+        int res = 1;
+        for(int i = 0; i<4; i++){
+            int newRow = row + dirRow[i];
+            int newCol = col + dirCol[i];
+
+            if(newRow >= 0 && newRow < n && newCol >= 0 && newCol < m){
+                if(grid[newRow][newCol] < grid[row][col]){
+                    res = (res + solve(newRow, newCol, n, m, grid))%mod;
+                }
+            }
+        }
+        return dp[row][col] = res;
+    }
+
+    int countPaths(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        dp.resize(1001, vector<int>(1001, -1));
+        int pathCnt = 0;
+
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                pathCnt = (pathCnt + solve(i, j, n, m, grid))%mod;
+            }
+        }
+        return pathCnt;
+    }
+};
