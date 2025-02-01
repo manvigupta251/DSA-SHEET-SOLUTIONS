@@ -1,0 +1,46 @@
+class Solution {
+public:
+    //now there are two changing params indx and amount
+    //cnt toh variable hain recursion depth ka doesnt matter 
+    //indx-> 0 to n and cnt
+    //now amnt 10^4 gaya toh 1 10^4 lagenge worst case main
+    vector<vector<int>> dp;
+
+    int solve(int indx, vector<int>& coins, int amount){
+        int n = coins.size();
+
+        if(amount == 0){
+            return 0; //no coins needed
+        }
+
+        if (indx >= coins.size() || amount < 0) return INT_MAX;  // Invalid case
+
+        if(dp[indx][amount] != -1) return dp[indx][amount];
+        
+
+        int pick = INT_MAX;
+        if (coins[indx] <= amount) {
+            int res = solve(indx, coins, amount - coins[indx]);
+            //yeh islie ki abhi 2 le lie pr ab iske aage solution ban hi nahi rha 
+            //target exceed hors hain like 11 banana ho 7 le lia pr 5 hi available hain
+            //so sum exceed toh kyu solution main add kare hum
+            if (res != INT_MAX) pick = 1 + res;  // Add 1 for picking this coin
+        }
+
+        // Skip the current coin
+        int skip = solve(indx + 1, coins, amount);
+
+        // Memoize and return the minimum
+        return dp[indx][amount] = min(pick, skip);
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        //solve(0, "", coins, amount);
+        //the idea of maintaining this string is a failure because 10 when addded to string returns ans 2 jbki its 1 number but bec of two digits wrong ans;
+        int n = coins.size();
+
+        dp.resize(n, vector<int>(amount+1, -1));
+        int result = solve(0, coins, amount);
+        return (result == INT_MAX) ? -1 : result;
+    }
+};
