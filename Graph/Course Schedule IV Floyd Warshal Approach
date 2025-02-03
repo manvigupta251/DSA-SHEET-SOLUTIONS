@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& pre, vector<vector<int>>& queries) {
+        //ab har node ko intermediate manke code
+        //flyd method using transitivity
+        //now to check if src -> int. and int->target exist
+        //adjList true/false maintain
+
+        //this wont wrk because 3 ke aage ture true true dal gaye
+        //map<int, vector<bool>> mp;
+        //but we dont know kis node se aye
+
+        vector<vector<bool>> adj(numCourses, vector<bool> (numCourses, false));
+
+        for(int i = 0; i<pre.size(); i++){
+
+            adj[pre[i][0]][pre[i][1]] = true; //1-> 0 marked true in adj
+            
+        }
+
+        for(int intermediate = 0; intermediate<numCourses; intermediate++){
+            for(int src = 0; src < numCourses; src++){
+                for(int target = 0; target<numCourses; target++){
+                    adj[src][target] = adj[src][target] || adj[src][intermediate] && adj[intermediate][target];
+                }
+            }
+        }
+
+        //tc: )(n^3 + q)
+        //three loops then query ke lie O(1) main answer
+        vector<bool> answer;
+        for (auto q : queries) {
+            answer.push_back(adj[q[0]][q[1]]);
+        }
+
+        return answer;
+    }
+};
