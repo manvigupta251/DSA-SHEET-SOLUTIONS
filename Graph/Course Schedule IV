@@ -1,0 +1,34 @@
+class Solution {
+public:
+    bool dfs(int nodeStart, int &nodeFind, map<int, vector<int>> &adj, vector<int> &visited){
+        visited[nodeStart] = 1;
+        if(nodeStart == nodeFind) return true;
+
+        int answer = false;
+        for(auto it: adj[nodeStart]){
+            if(it == nodeFind) return true;
+            if(!visited[it]){
+                answer = answer || dfs(it, nodeFind, adj, visited);
+            }
+        }
+        return answer;
+
+    }
+
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& pre, vector<vector<int>>& queries) {
+        //ai bi =  a->b
+        //find : u is a prerequisite of course v or not.
+        map<int, vector<int>> adj;
+        for(auto it: pre){
+            adj[it[0]].push_back(it[1]);
+        }
+
+        vector<bool> ans;
+        for(auto it: queries){
+            vector<int> visited(numCourses, 0);
+            if(dfs(it[0], it[1], adj, visited)) ans.push_back(true);
+            else ans.push_back(false);
+        }
+        return ans;
+    }
+};
