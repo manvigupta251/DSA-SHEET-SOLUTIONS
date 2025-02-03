@@ -1,0 +1,36 @@
+class Solution {
+public: 
+    #define ll long long
+    int mod = 1e9 + 7;
+    long long cnt = 0;
+
+    void solve(int low, int high, int zero, int one, ll zeroAdd, ll oneAdd){
+        //yeh case nii likhenge because yeh "0" ko not in range leke return wont be able to increase len
+
+        // if(zeroAdd + oneAdd < low || zeroAdd + oneAdd > high) return; //not in range
+
+        if(zeroAdd + oneAdd >= low && zeroAdd + oneAdd <= high){
+            cnt++;  //one valid string found
+            //return; we wont return cause abhi 2 len ki mili hain aur expand karna hain till <= high
+        }
+
+        //exceed len
+        if(zeroAdd + oneAdd > high) return;
+
+        //now we can either append 0 or 1
+        //0case
+        solve(low, high, zero, one, zeroAdd+zero, oneAdd);
+        solve(low, high, zero, one, zeroAdd, oneAdd + one);
+        return;
+    }
+
+    int countGoodStrings(int low, int high, int zero, int one) {
+        //length between low and high (inclusive).
+        //zero times mean 0 ko ek baari main itne times dalo
+        //either append 0 or 1 also we have to deal with ki ek baari itne kaise addhonge
+        //instead of maintaing string cause any char can be added many time so
+        //maintain cnt and compare oneADDED + zeroADDED as the cnt;
+        solve(low, high, zero, one, 0, 0);
+        return cnt%mod;
+    }
+};
