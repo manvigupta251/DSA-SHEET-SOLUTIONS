@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<vector<int>> dp;
+
+    int solve(int indx, vector<vector<int>>& piles, int k){
+        int n = piles.size();
+        if(indx >= n || k == 0) return 0;
+
+        if (dp[indx][k] != -1) return dp[indx][k];
+
+        int notpick = solve(indx+1, piles, k);
+        //ab pick karre ho skt hain full k pick karlo agr k = 2 toh 
+        //ek pile 1 se ek pile 2 se
+        int pick = 0, sum = 0;
+        
+        //ab hum ek pile se jitne lere lere pr hum 
+        //solve(indx + 1, piles, k - (i + 1) isi main pick not pick ki wajah se
+        //alone pile k element and one pile se ek doosri pile se ek
+        //both ka max return hoga jise sum se add karke dekhnge max knsa aara
+
+        for (int i = 0; i < min((int)piles[indx].size(), k); i++) {
+            sum += piles[indx][i];  // Add coin value
+            pick = max(pick, sum + solve(indx + 1, piles, k - (i + 1)));
+        }
+
+
+        return dp[indx][k] = max(pick, notpick);
+    }
+    int maxValueOfCoins(vector<vector<int>>& piles, int k) {
+        // n piles either remove or not pick not pick
+        //greedy wont work kyuki secodn testcase ke last main
+        //pick pile or skip pile
+        int n = piles.size();
+        dp.resize(n, vector<int>(k+1, -1));
+        return solve(0, piles, k);
+    }
+};
