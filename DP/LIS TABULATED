@@ -1,0 +1,26 @@
+class Solution {
+public:
+
+    int lengthOfLIS(vector<int>& nums) {
+        //there are multiple ways tofind first 
+        //rec memo tabulation
+        //index array and hash array 
+        //binary search se
+        //as dp main prev indx -1 hora hain toh sbko aage shift kardenge
+        int n = nums.size();
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        //base case no need already zero
+        for(int indx = n-1; indx>=0; indx--){
+            //prev indx ind ke peeche se -1 tk jara hain so
+            for(int prev_indx = indx - 1; prev_indx >= -1; prev_indx-- ){
+                int take = 0;
+                if(prev_indx == -1 || nums[indx] > nums[prev_indx]){
+                    take += 1 + dp[indx+1][indx+1];
+                }
+                int nottake = dp[indx+1][prev_indx+1];
+                dp[indx][prev_indx+1] = max(take, nottake);
+            }
+        }
+        return dp[0][0];
+    }
+};
