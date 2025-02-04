@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        //hash array
+
+        //u can have parent array to print also 
+        //but as here we need only cnt so only hash array of cnt
+        int n = nums.size();
+        vector<int> hashArr(n, 1);
+
+        for(int i = 1; i<n; i++){
+            for(int prev = 0; prev < i; prev++){
+                if(nums[prev] < nums[i] && hashArr[prev]+1 > hashArr[i]){
+                    hashArr[i] = hashArr[prev] + 1;
+                }
+            }
+        }
+        return *max_element(hashArr.begin(), hashArr.end());
+    }
+};
