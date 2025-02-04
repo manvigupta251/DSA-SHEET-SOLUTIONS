@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        //binary search solution
+        //basically yeh print ni kar skta pr size ekdum perfect bataega
+        //why lowerbnd becuase arr 10 11 12 and we need lb of 10 toh 10 return ie 0 indx 
+        //but upper bnd present ho na ho seedha ek badha ke 1 ie 11
+        vector<int> ans;
+        ans.push_back(nums[0]);
+
+        for(int i = 1; i<nums.size(); i++){
+            if(ans.back() < nums[i]){
+                ans.push_back(nums[i]);
+            }
+            else{
+                auto it = lower_bound(ans.begin(), ans.end(), nums[i])-ans.begin();
+                ans[it] = nums[i];
+            }
+        }
+        return ans.size();
+    }
+};
