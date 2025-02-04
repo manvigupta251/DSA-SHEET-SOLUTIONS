@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int solve(int indx, int prev, vector<int> & nums, vector<vector<int>> &dp){
+        int n = nums.size();
+        if(indx == n) return 0; //no length element
+
+        if(dp[indx][prev+1] != -1) return dp[indx][prev+1];
+        //not take
+        int nottake = solve(indx+1, prev, nums, dp);
+        //take case
+        int take = 0;
+        if(prev == -1 || nums[indx] > nums[prev]){ //yha nums ka prev + 1 ni hoga
+            take = 1 + solve(indx+1, indx, nums, dp);
+        }
+
+        return dp[indx][prev+1] = max(take, nottake);
+    }
+
+    int lengthOfLIS(vector<int>& nums) {
+        //ab dp array ki agr humne isse le lia apne solution toh age ke naa le paye islie skip and then try by taking it
+        int n = nums.size();
+        //prev is also a changing param value-> -1 to n-1 pass ho skti hain
+        //-1 cant be stored in array so shifting coords to +1 
+        //so 0 to n value of prev
+        vector<vector<int>> dp(n, vector<int>(n+1, -1));
+        return solve(0, -1, nums, dp);
+    }
+};
