@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 1); // dp[i] stores the length of the LIS ending at arr[i]
+        vector<int> ct(n, 1); // ct[i] stores the count of LIS ending at arr[i]
+        int maxi = 1;
+        for(int i = 0; i<n; i++){
+            for(int prev = 0; prev<i; prev++){
+                if(nums[i] > nums[prev] && dp[i] < dp[prev] + 1){
+                    //isme new len ka pehla mila so
+                    dp[i] = dp[prev] + 1;
+                    ct[i] = ct[prev];
+                }
+                else if(nums[i] > nums[prev] && dp[i] == dp[prev] + 1){
+                    //repeating sequence same len ka same ele pr end hone wala
+                    ct[i] += ct[prev];
+                }
+            }
+            maxi = max(maxi, dp[i]);
+        }
+        int numberOfLIS = 0;
+        for(int i = 0; i<n; i++){
+            if(dp[i] == maxi) numberOfLIS += ct[i];
+        }
+        return numberOfLIS;
+    }
+};
