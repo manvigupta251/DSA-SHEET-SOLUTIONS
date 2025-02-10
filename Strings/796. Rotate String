@@ -1,0 +1,21 @@
+Method 1:   return (s.size() == goal.size()) && ((s + s).find(goal) != string::npos);
+Method 2: 
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        //substr()
+        bool ans=false;
+        if(s == goal) return true;
+        if(s.size()!=goal.size()) return false;
+        for(int i=1;i<s.size();i++){
+            
+            s = s.substr(1, s.size()) + s[0];
+            if(s==goal){
+                ans=true;
+                break;
+            }
+           // break;
+        }
+        return ans;
+    }
+};
