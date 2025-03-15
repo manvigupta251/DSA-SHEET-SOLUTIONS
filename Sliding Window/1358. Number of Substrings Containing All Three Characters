@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        //brute is to find all substrings and check
+        //and a little optimization can be if a window is found every char after it
+        //will be a valid substring
+        int n = s.size();
+        int cnt = 0;
+
+        //to check all char contained
+        vector<int> charArr(3, -1);
+
+        for(int i = 0; i<s.size(); i++){
+            charArr[s[i]-'a'] = i;
+
+            if(charArr[0] != -1 && charArr[1] != -1 && charArr[2] != -1){
+                //valid window found ab isse aage tk saare is valid
+                cnt += 1 + min({charArr[0], charArr[1], charArr[2]});
+            }            
+        }
+
+        return cnt;
+    }
+};
