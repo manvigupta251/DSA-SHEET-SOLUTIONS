@@ -1,0 +1,31 @@
+class Solution {
+public:  
+    
+    void solve(int indx, vector<int> &temp, vector<int>& nums, set<vector<int>> &st) {
+        int n = nums.size();
+        if (indx == n){
+            if(temp.size() > 1) {
+                st.insert(temp);
+                // ans.push_back(temp); 
+            }     
+            return;
+        }
+
+        // Not pick
+        solve(indx + 1, temp, nums, st);
+
+        // Pick if valid
+        if (temp.size()==0 || nums[indx] >= temp.back()) {
+            temp.push_back(nums[indx]);
+            solve(indx + 1, temp, nums, st);
+            temp.pop_back();
+        }
+    }
+
+    vector<vector<int>> findSubsequences(vector<int>& nums) {      
+        vector<int> temp;
+        set<vector<int>> st;
+        solve(0, temp, nums, st);
+        return vector(st.begin(), st.end());
+    }
+};
