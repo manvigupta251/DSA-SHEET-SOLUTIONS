@@ -1,0 +1,25 @@
+#include <bits/stdc++.h> 
+
+bool isPal(string temp){
+    int i = 0, j = temp.size()-1;
+    while(i <= j){
+        if(temp[i] != temp[j]) return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+
+
+bool checkPalindrome(string s)
+{
+    string temp = "";
+    for(int i = 0; i<s.size(); i++){
+        if(isalpha(s[i])){
+            temp += tolower(s[i]);
+        }
+        else if(s[i]-'0' >= 0 && s[i]-'0'<=9) temp +=s[i];
+    }
+
+    return isPal(temp);
+}
