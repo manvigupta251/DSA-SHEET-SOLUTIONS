@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int cnt = 0;
+
+    void solve(int indx, int k, vector<int> &temp, vector<int> &nums){
+        int n = nums.size();
+        if(indx == n){
+            for(int i = 0; i<temp.size(); i++){
+                for(int j = i+1; j<temp.size(); j++){
+                    if(abs(temp[i]-temp[j]) == k) return;
+                }
+            }
+            cnt++;
+            return;
+        }
+
+        //pick not pick
+        solve(indx+1, k, temp, nums);
+
+        temp.push_back(nums[indx]);
+        solve(indx+1, k, temp, nums);
+        temp.pop_back();
+    }
+
+    int beautifulSubsets(vector<int>& nums, int k) {
+        vector<int> temp;
+        solve(0, k, temp, nums);
+        return cnt-1; //because woh empty set ko bhi le rha hain
+    }
+};
