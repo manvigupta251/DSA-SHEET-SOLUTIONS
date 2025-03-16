@@ -1,0 +1,45 @@
+class Solution {
+public:
+    void solve(int indx, vector<string> &strArr, vector<string> &ans, string temp){
+        //abc def
+        int n = strArr.size();
+        if(indx == n){
+            if(temp.size() == n) ans.push_back(temp);
+            return;
+        }
+
+        if(temp.size()>n) return;
+
+        for(int i = 0; i<strArr[indx].size(); i++){
+            //indx wale ko main leke aage ki strign jodo
+            solve(indx+1, strArr, ans, temp+strArr[indx][i]);            
+        }
+    }
+
+    vector<string> letterCombinations(string digits) {
+        unordered_map<char, string> mp = {
+            {'2', "abc"},
+            {'3', "def"},
+            {'4', "ghi"},
+            {'5', "jkl"},
+            {'6', "mno"},
+            {'7', "pqrs"},
+            {'8', "tuv"},
+            {'9', "wxyz"}
+        };
+
+        if(digits == "") return {};
+
+        vector<string> strArr;
+
+        for(int i = 0; i<digits.size(); i++){
+            strArr.push_back(mp[digits[i]]);
+        }
+
+        vector<string> ans;
+
+        solve(0, strArr, ans, "");
+
+        return ans;
+    }
+};
