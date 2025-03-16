@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        //either do normal hashmap approach
+        //OR do sign trick 
+        vector<int> ans, arr;
+        for(int i = 0; i<grid.size(); i++){
+            for(auto it: grid[i]){
+                arr.push_back(it);
+            }
+        }
+
+        //1322
+        //1234 -> i+1 correct ans dedega
+        for(int i = 0; i<arr.size(); i++){
+            int num = abs(arr[i]);
+            if(arr[num-1] < 0){
+                //iska mtlb repeated hain
+                ans.push_back(num);
+            }
+            else{
+                arr[num-1] = -arr[num-1]; 
+            }
+        }
+        //missing
+        for(int i = 0; i<arr.size(); i++){
+            if(arr[i] > 0){
+                ans.push_back(i+1);
+            }
+        }
+        return ans;
+    }
+};
