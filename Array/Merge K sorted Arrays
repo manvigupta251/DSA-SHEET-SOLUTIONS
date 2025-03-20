@@ -1,0 +1,58 @@
+vector<int> merge(vector<int> a1, vector<int> a2){
+    int n = a1.size(), m = a2.size();
+    vector<int> mergedArr;
+
+    int i = 0, j = 0;
+
+    while(i < n && j < m){
+        if(a1[i] <= a2[j]){
+            mergedArr.push_back(a1[i]);
+            i++;
+        }
+        else{
+            mergedArr.push_back(a2[j]);
+            j++;
+        }
+    }
+
+    while(i < n){
+        mergedArr.push_back(a1[i]);
+        i++;
+    }
+
+    while(j < m){
+        mergedArr.push_back(a2[j]);
+        j++;
+    }
+
+    return mergedArr;
+}
+
+vector<int>mergeKSortedArraysHelper(vector<vector<int>> &kArrays, int start, int end){
+    //base case
+     if(start == end)
+    {
+        return kArrays[start];
+    }
+
+    int mid = start + (end - start)/2;
+
+    vector<int> first = mergeKSortedArraysHelper(kArrays, start, mid);
+    vector<int> second = mergeKSortedArraysHelper(kArrays, mid + 1, end);
+    
+    // Return the final merged array.
+    return merge(first, second);
+
+}
+
+class Solution
+{
+    public:
+    //Function to merge k sorted arrays.
+    vector<int> mergeKArrays(vector<vector<int>> arr, int K)
+    {
+        if(K == 1) return arr[0];
+        if(K == 2) return merge(arr[0], arr[1]);
+        return mergeKSortedArraysHelper(arr, 0, K-1);
+    }
+};
