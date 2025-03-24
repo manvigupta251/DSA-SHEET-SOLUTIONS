@@ -1,0 +1,75 @@
+class Solution {
+public:
+    bool solve(int i, int j, string &s, string &p){
+        //if i is exhausted and j is pending
+        //so make sure string p has only special char
+        if(i == s.size() && j<p.size()){
+            for(int indx = j; indx<p.size(); indx++){
+                if(p[indx] != '*') return false;
+            }
+            return true;
+        }
+
+        if(i == s.size() && j==p.size()) return true;
+
+        if(i < s.size() && j == p.size()) return false; //cause i abi pending hain
+        
+        if(s[i] == p[j] || p[j] == '?') return solve(i+1, j+1, s, p);
+
+        if(p[j] == '*'){
+            //none or whole
+            bool nottake = solve(i, j+1, s, p);
+            bool take = solve(i+1, j, s, p);
+            return nottake || take;
+        }
+        return false;
+        
+    }
+
+    bool isMatch(string s, string p) {
+        //main toh star handle karna cause * can point to one now or whole string
+        //only string p will contain special char
+        return solve(0, 0,s,p);
+    }
+};
+
+
+
+
+class Solution {
+public:
+
+    vector<vector<int>> dp;
+    bool solve(int i, int j, string &s, string &p){
+        //base case
+        if( i < 0 && j < 0) return true;
+        //j ie pattern is exhausted
+        if(j < 0 && i >= 0){
+            return false; //abc  bc
+        }
+        if(i < 0 && j >= 0){
+            //pattern bacha hai  ** abc full done ho gaya oehla star use karke hi
+            //possible only ki star ho a cba
+            for(int k = 0; k<=j; k++){
+                if(p[k] != '*') return false;
+            }
+            return true;
+        }
+
+        if(dp[i][j] != -1) return dp[i][j];
+
+        if(s[i] == p[j] || p[j] == '?') return dp[i][j] = solve(i-1, j-1, s, p);
+        //now its a star either we take the star further def or we just take f and move on
+        //this is case def *def is case main star nahi lenge
+        if(p[j] == '*') return dp[i][j] = (solve(i-1, j, s, p) || solve(i, j-1, s, p));
+
+        return dp[i][j] = false;
+    }
+
+    bool isMatch(string s, string p) {
+        //* ? != 
+        int n = s.size(), m = p.size();
+        dp.resize(n, vector<int>(m, -1));
+        return solve(n-1, m-1, s, p);
+    }
+};
