@@ -1,0 +1,57 @@
+class Solution {
+public:
+    void dfs(int &edgecnt, int &vertices, vector<int> &visited, unordered_map<int, vector<int>>adjList, int node){
+        visited[node] = 1;
+        vertices++;
+        edgecnt += adjList[node].size();
+
+        for(auto it: adjList[node]){
+            if(visited[it]==-1){
+                dfs(edgecnt, vertices, visited, adjList, it);
+            }
+        }
+    }
+
+
+    int countCompleteComponents(int n, vector<vector<int>>& edges) {
+        //complete -> cycle not working closed structure hain cycle banri hain but ek vertice apas main ni joined which is diagonal
+        //connected -> all reachable
+
+        //no. of edges in complete graph -> n*(n-1)/2
+        //degree fo complete graph ki vertice n-1
+        //cause khudko chodkr sbse connected hain
+
+        //approach BFS/DFS/Union find
+
+        //DFS
+        //adj List
+        unordered_map<int, vector<int>>adjList;
+
+        for(auto it: edges){
+            int u = it[0], v = it[1];
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
+        }
+
+        int component = 0;
+        //ab connected chahiye islie all vertices se call jaegi
+        vector<int> visited(n, -1);
+
+        for(int i = 0; i<n; i++){
+            if(visited[i] != -1) continue;
+
+            int v = 0, e = 0;
+            if(visited[i] == -1){
+                //iska mtlb dfs call crow usse age jo pahuche check karke lao
+                //kitni vertices and edges cover hori hain
+                dfs(e, v, visited, adjList, i);
+            }
+            //ab connected ek component mil gaya ab complete check karna hain bas
+            //so edges == vertices * vetices-1 /2 
+            //if(v*(v-1)/2 == e/2) because undirected hain
+            if((v*(v-1)) == e) component++;
+        }
+
+        return component;
+    }
+};
